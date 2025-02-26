@@ -1,5 +1,10 @@
 # Secure Data Hiding in Images Using Steganography
 
+## [Output]()
+### [Frontend Deployed link]()
+### [Backend Deployed link]()
+
+
 ## About the Project
 
 This project provides a secure method to hide and retrieve messages within images using steganography. It enables users to encrypt text messages inside images using a password and later decrypt them using the same password. The implementation includes both frontend and backend components to facilitate seamless encryption and decryption.
