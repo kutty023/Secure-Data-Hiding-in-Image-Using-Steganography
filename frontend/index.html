@@ -70,7 +70,7 @@
 
             statusElement.textContent = "Encrypting...";
 
-            fetch('http://127.0.0.1:5000/encrypt', { method: 'POST', body: formData })
+            fetch('https://secure-data-hiding-in-image-using.onrender.com/encrypt', { method: 'POST', body: formData })
                 .then(response => response.blob())
                 .then(blob => {
                     let link = document.createElement('a');
@@ -99,14 +99,14 @@
             formData.append("image", image);
             formData.append("password", password);
 
-            fetch('http://127.0.0.1:5000/decrypt', { method: 'POST', body: formData })
+            fetch('https://secure-data-hiding-in-image-using.onrender.com/decrypt', { method: 'POST', body: formData })
                 .then(response => {
                     return response.json();
                 })
                 .then(data => {
                     console.log("Server Response:", data);
                     if (data.message) {
-                        alert("Decrypted Message: " + data.message);
+                        decryptedMessageElement.textContent =  data.message;
                     } else if (data.error) {
                         alert("Error: " + data.error);
                     } else {
