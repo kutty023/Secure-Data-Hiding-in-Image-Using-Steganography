@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Stego</title>
+    <style>
+        .container {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            margin: 20px auto;
+            width: 300px;
+        }
+        .container.active {
+            display: block;
+        }
+        .decryptedMessage {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Image Stego</h1>
+        <button id="encryptBtn">Encrypt</button>
+        <button id="decryptBtn">Decrypt</button>
+
+        <div id="encrypt" class="container active">
+            <h2>Encryption</h2>
+            <label for="imageInput">Select Image:</label>
+            <input type="file" id="imageInput" accept="image/*"><br><br>
+            <label for="message">Message:</label>
+            <input type="text" id="message"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password"><br><br>
+            <button id="encryptSubmit">Encrypt Image</button>
+            <p id="encrypt-status"></p>
+        </div>
+
+        <div id="decrypt" class="container">
+            <h2>Decryption</h2>
+            <label for="stegoImageInput">Select Stego Image:</label>
+            <input type="file" id="stegoImageInput" accept="image/*"><br><br>
+            <label for="stegoPassword">Password:</label>
+            <input type="password" id="stegoPassword"><br><br>
+            <button id="decryptSubmit">Decrypt Image</button>
+            <p class="decryptedMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        function encryptImage() {
+            let image = document.getElementById('imageInput').files[0];
+            let password = document.getElementById('password').value;
+            let message = document.getElementById('message').value;
+            let statusElement = document.getElementById('encrypt-status');
+            statusElement.textContent = "";
+
+            if (!image || !password || !message) {
+                statusElement.textContent = "Please fill in all fields.";
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("image", image);
+            formData.append("password", password);
+            formData.append("message", message);
+
+            statusElement.textContent = "Encrypting...";
+
+            fetch('http://127.0.0.1:5000/encrypt', { method: 'POST', body: formData })
+                .then(response => response.blob())
+                .then(blob => {
+                    let link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "encrypted_image.png";
+                    link.click();
+                    statusElement.textContent = "Encryption successful. Image downloaded.";
+                })
+                .catch(() => {
+                    statusElement.textContent = "Encryption failed. Please try again.";
+                });
+        }
+
+        function decryptImage() {
+            let image = document.getElementById('stegoImageInput').files[0];
+            let password = document.getElementById('stegoPassword').value;
+            let decryptedMessageElement = document.querySelector('.decryptedMessage');
+            decryptedMessageElement.textContent = "";
+
+            if (!image || !password) {
+                decryptedMessageElement.textContent = "Please fill in all fields.";
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("image", image);
+            formData.append("password", password);
+
+            fetch('http://127.0.0.1:5000/decrypt', { method: 'POST', body: formData })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Server Response:", data);
+                    if (data.message) {
+                        alert("Decrypted Message: " + data.message);
+                    } else if (data.error) {
+                        alert("Error: " + data.error);
+                    } else {
+                        alert("Decryption failed. Please try again.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Fetch Error:", error);
+                    decryptedMessageElement.textContent = "An error occurred during decryption.";
+                });
+        }
+
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const encryptContainer = document.getElementById('encrypt');
+        const decryptContainer = document.getElementById('decrypt');
+
+        encryptBtn.addEventListener('click', () => {
+            encryptContainer.classList.add('active');
+            decryptContainer.classList.remove('active');
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            decryptContainer.classList.add('active');
+            encryptContainer.classList.remove('active');
+        });
+
+        document.getElementById("encryptSubmit").addEventListener('click', encryptImage);
+        document.getElementById("decryptSubmit").addEventListener('click', decryptImage);
+    </script>
+</body>
+</html>
