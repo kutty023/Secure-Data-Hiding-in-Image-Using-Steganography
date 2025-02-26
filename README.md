@@ -2,9 +2,8 @@
 
 ## [Website!](https://kutty023.github.io/Secure-Data-Hiding-in-Image-Using-Steganography/frontend/index.html)
 
-### [Frontend Deployed link]()
-### [Backend Deployed link](https://secure-data-hiding-in-image-using.onrender.com) 
-## Note : Render will take some time to load (55sec) please do wait and then check the application
+#### Note : Render will take some time to load (55sec) please do wait and then check the application
+#### [Backend Deployed link](https://secure-data-hiding-in-image-using.onrender.com) 
 
 
 ## About the Project
