@@ -18,6 +18,10 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
+@app.route('/')
+def home():
+    return "Flask server is running!"
+
 @app.route('/encrypt', methods=['POST'])
 def encrypt():
     if 'image' not in request.files or 'password' not in request.form:
